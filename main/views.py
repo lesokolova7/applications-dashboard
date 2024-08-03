@@ -1,8 +1,10 @@
+# views.py
+
 import io
 import qrcode
 import base64
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -54,22 +56,7 @@ def generate_qr_code(request):
         else:
             messages.error(request, "Invalid OTP")
 
-    return render(
-        request, "registration/show_qr_code.html", {"qr_code": qr_code_base64}
-    )
-
-
-def verify_otp(request):
-    if request.method == "POST":
-        otp = request.POST.get("otp")
-        user = request.user
-        totp = pyotp.TOTP(user.otp_secret_key)
-        if totp.verify(otp):
-            login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-            return redirect("/home")
-        else:
-            messages.error(request, "Invalid OTP")
-    return render(request, "registration/verify_otp.html")
+    return render(request, "registration/show_qr_code.html", {"qr_code": qr_code_base64})
 
 
 def login_view(request):
@@ -80,6 +67,7 @@ def login_view(request):
             password = form.cleaned_data.get("password")
             user = authenticate(request, username=username, password=password)
             if user is not None:
+                # Don't log the user in yet, store user ID in session
                 request.session["pre_2fa_user_id"] = user.pk
                 return redirect("verify_otp_login")
         else:
@@ -97,9 +85,8 @@ def verify_otp_login(request):
             user = CustomUser.objects.get(pk=user_id)
             totp = pyotp.TOTP(user.otp_secret_key)
             if totp.verify(otp):
-                login(
-                    request, user, backend="django.contrib.auth.backends.ModelBackend"
-                )
+                login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+                del request.session["pre_2fa_user_id"]  # Remove the user ID from session
                 return redirect("/home")
             else:
                 messages.error(request, "Invalid OTP")
@@ -108,6 +95,7 @@ def verify_otp_login(request):
     return render(request, "registration/verify_otp.html")
 
 
+@login_required
 def show_qr_code(request):
     user = request.user
     if not user.otp_secret_key:
