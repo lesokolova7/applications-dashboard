@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     "django_browser_reload",
 ]
 
-TAILWIND_APP_NAME = 'theme'
+TAILWIND_APP_NAME = "theme"
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -49,13 +49,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "AcctSystem.urls"
-
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "main.backends.OTPBackend",
-]
-
-AUTH_USER_MODEL = "main.CustomUser"
 
 TEMPLATES = [
     {
