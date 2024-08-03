@@ -1,1 +1,23 @@
+from django import forms
+from .models import Application, LegalEntity, Partner
+import logging
 
+logger = logging.getLogger('django')
+
+
+class ApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(ApplicationForm, self).__init__(*args, **kwargs)
+
+
+class LegalEntitiesForm(forms.ModelForm):
+    class Meta:
+        model = LegalEntity
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(LegalEntitiesForm, self).__init__(*args, **kwargs)

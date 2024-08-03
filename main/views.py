@@ -1,8 +1,10 @@
+from .models import LegalEntity
 from django.contrib.auth import login
 
 from django.contrib.auth.forms import UserCreationForm
 
 from django.shortcuts import render, redirect
+from .forms import ApplicationForm, LegalEntitiesForm
 
 
 def home(request):
@@ -23,3 +25,20 @@ def sign_up(request):
         form = UserCreationForm()
 
     return render(request, "registration/sign_up.html", {"form": form})
+
+
+def legal_entities_list(request):
+    legals = LegalEntity.objects.all()
+    return render(request, 'legal/legal_entities_list.html', {'legals': legals})
+
+
+def legal_entities_create(request):
+    if request.method == "POST":
+        form = LegalEntitiesForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('legal/legal_entities_list')
+    else:
+        form = LegalEntitiesForm()
+        return render(request, 'legal/legal_entities_form.html', {'form': form})
