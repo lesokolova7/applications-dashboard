@@ -37,7 +37,7 @@ def application_create_view(request):
             try:
                 application.save()
                 return redirect("transaction_success")
-            except Exception as e:
+            except Exception:
                 return redirect("transaction_failed")
     else:
         form = ApplicationForm()
@@ -54,7 +54,7 @@ def application_update_view(request, pk):
             try:
                 application.save()
                 return redirect("transaction_success")
-            except Exception as e:
+            except Exception:
                 return redirect("transaction_failed")
     else:
         form = ApplicationForm(instance=application)
@@ -71,7 +71,7 @@ def transaction_failed(request):
 
 def legal_entities_list(request):
     legals = LegalEntity.objects.all()
-    return render(request, 'legal/legal_entities_list.html', {'legals': legals})
+    return render(request, "legal/legal_entities_list.html", {"legals": legals})
 
 
 def legal_entities_create(request):
@@ -80,15 +80,15 @@ def legal_entities_create(request):
 
         if form.is_valid():
             form.save()
-            return redirect('legal/legal_entities_list')
+            return redirect("legal_entities_list")
     else:
         form = LegalEntitiesForm()
-        return render(request, 'legal/legal_entities_form.html', {'form': form})
+        return render(request, "legal/legal_entities_form.html", {"form": form})
 
 
 def partner_list(request):
     partners = Partner.objects.all()
-    return render(request, 'partner/partner_list.html', {'partners': partners})
+    return render(request, "partner/partner_list.html", {"partners": partners})
 
 
 def partner_create(request):
@@ -97,7 +97,7 @@ def partner_create(request):
 
         if form.is_valid():
             form.save()
-            return redirect('partner/partner_list')
+            return redirect("partner_list")
     else:
         form = PartnerForm()
-        return render(request, 'partner/partner_form.html', {'form': form})
+        return render(request, "partner/partner_form.html", {"form": form})

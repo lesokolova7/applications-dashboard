@@ -55,7 +55,6 @@ class ApplicationChoices(Enum):
 
 
 class Application(models.Model):
-
     id = models.AutoField(primary_key=True)
     status = models.CharField(choices=ApplicationChoices.choices(), max_length=25)
     created_date = models.DateTimeField(auto_now_add=True)
