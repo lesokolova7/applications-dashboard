@@ -962,6 +962,10 @@ select {
   max-width: fit-content;
 }
 
+.max-w-\[75\%\] {
+  max-width: 75%;
+}
+
 .flex-1 {
   flex: 1 1 0%;
 }
@@ -1288,6 +1292,11 @@ select {
 .text-gray-700 {
   --tw-text-opacity: 1;
   color: rgb(55 65 81 / var(--tw-text-opacity));
+}
+
+.text-red-500 {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
 }
 
 .underline {
