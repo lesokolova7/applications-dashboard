@@ -1,10 +1,10 @@
-from .models import LegalEntity
+from .models import LegalEntity, Partner
 from django.contrib.auth import login
 
 from django.contrib.auth.forms import UserCreationForm
 
 from django.shortcuts import render, redirect
-from .forms import ApplicationForm, LegalEntitiesForm
+from .forms import ApplicationForm, LegalEntitiesForm, PartnerForm
 
 from .forms import ApplicationForm
 
@@ -27,6 +27,9 @@ def sign_up(request):
         form = UserCreationForm()
 
     return render(request, "registration/sign_up.html", {"form": form})
+
+
+3
 
 
 def create_application(request):
@@ -56,3 +59,20 @@ def legal_entities_create(request):
     else:
         form = LegalEntitiesForm()
         return render(request, 'legal/legal_entities_form.html', {'form': form})
+
+
+def partner_list(request):
+    partners = Partner.objects.all()
+    return render(request, 'partner/partner_list.html', {'partners': partners})
+
+
+def partner_create(request):
+    if request.method == "POST":
+        form = PartnerForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('partner/partner_list')
+    else:
+        form = PartnerForm()
+        return render(request, 'partner/partner_form.html', {'form': form})

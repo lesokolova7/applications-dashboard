@@ -944,8 +944,22 @@ select {
   min-width: 100%;
 }
 
+.min-w-fit {
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+}
+
 .max-w-\[50\%\] {
   max-width: 50%;
+}
+
+.max-w-\[60\%\] {
+  max-width: 60%;
+}
+
+.max-w-fit {
+  max-width: -moz-fit-content;
+  max-width: fit-content;
 }
 
 .flex-1 {
@@ -962,6 +976,10 @@ select {
 
 .grow {
   flex-grow: 1;
+}
+
+.flex-row {
+  flex-direction: row;
 }
 
 .flex-col {
@@ -1090,6 +1108,11 @@ select {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.bg-amber-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(120 53 15 / var(--tw-bg-opacity));
 }
 
 .p-2 {
@@ -1285,6 +1308,10 @@ select {
 
 .accent-blue-900 {
   accent-color: #1e3a8a;
+}
+
+.accent-red-600 {
+  accent-color: #dc2626;
 }
 
 .shadow-sm {
