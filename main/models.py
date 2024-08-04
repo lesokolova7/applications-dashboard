@@ -34,7 +34,7 @@ class Partner(models.Model):
 class LegalEntity(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, unique=True, null=False)
-    partner_id = models.ForeignKey("Partner", on_delete=models.CASCADE, null=False)
+    partner = models.ForeignKey("Partner", on_delete=models.CASCADE, null=False)
     tax_number = models.CharField(max_length=255, null=False)
     legal_entity_percentage = models.FloatField(null=False, max_length=10)
     created_at = models.DateTimeField(auto_now_add=True, null=False)
@@ -59,20 +59,20 @@ class Application(models.Model):
     status = models.CharField(choices=ApplicationChoices.choices(), max_length=25)
     created_date = models.DateTimeField(auto_now_add=True)
     resolving_date = models.DateTimeField(null=True)
-    customer_id = models.ForeignKey(
+    customer = models.ForeignKey(
         "Partner", on_delete=models.SET_NULL, related_name="partner_customer", null=True
     )
-    executor_id = models.ForeignKey(
+    executor = models.ForeignKey(
         "Partner", on_delete=models.SET_NULL, related_name="partner_executor", null=True
     )
     initial_sum = models.FloatField(null=False)
-    receiver_id = models.ForeignKey(
+    receiver = models.ForeignKey(
         "LegalEntity",
         on_delete=models.SET_NULL,
         related_name="legal_entity_receiver",
         null=True,
     )
-    sender_id = models.ForeignKey(
+    sender = models.ForeignKey(
         "LegalEntity",
         on_delete=models.SET_NULL,
         related_name="legal_entity_sender",
@@ -88,7 +88,7 @@ class Application(models.Model):
     )
     commission_with_interest = models.FloatField(null=False)
     uncargo_sum = models.FloatField(null=False)
-    referral_procentage = models.FloatField(null=False)
+    referral_percentage = models.FloatField(null=False)
     clean_income = models.FloatField(null=False)
     comment = models.CharField(max_length=1500, null=False)
     is_documents = models.BooleanField(default=False, null=False)

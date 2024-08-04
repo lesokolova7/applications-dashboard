@@ -37,7 +37,6 @@ def application_create_view(request):
     if request.method == "POST":
         form = ApplicationForm(request.POST)
         if form.is_valid():
-            # form.is_documents = request.POST.get('is_documents') == 'on'
             application = form.save(commit=False)
             form.update_calculated_fields()
             try:

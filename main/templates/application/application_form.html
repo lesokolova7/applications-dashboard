@@ -9,7 +9,7 @@
         <div class="flex flex-col gap-2">
             <div class="flex flex-row gap-5 items-center">
                 <label class="block text-sm font-medium leading-6 text-gray-900 min-w-fit">{{ field.label }}</label>
-                {% if field.name == 'executor_id' %}
+                {% if field.name == 'executor' %}
                 <select id="id_executor" name="{{ field.name }}"
                         class="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     <option value="">
@@ -126,7 +126,7 @@
 
             $('#id_sum_with_executors_commission').val(sumWithExecutorsCommission.toFixed(2));
             $('#id_uncargo_sum').val(uncargoSum.toFixed(2));
-            $('#id_referral_procentage').val(referralPercentage.toFixed(2));
+            $('#id_referral_percentage').val(referralPercentage.toFixed(2));
             $('#id_clean_income').val(cleanIncome.toFixed(2));
         }
 

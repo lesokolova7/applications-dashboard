@@ -15,12 +15,12 @@ class ApplicationForm(forms.ModelForm):
         label="Статус заявки: ",
         widget=forms.Select(attrs={"class": inputClass}),
     )
-    customer_id = forms.ModelChoiceField(
+    customer = forms.ModelChoiceField(
         queryset=Partner.objects.filter(is_executor=False),
         label="Клиент: ",
         widget=forms.Select(attrs={"class": inputClass, "id": "id_customer"}),
     )
-    executor_id = forms.ModelChoiceField(
+    executor = forms.ModelChoiceField(
         queryset=Partner.objects.filter(is_executor=True),
         label="Исполнитель: ",
         widget=forms.Select(attrs={"class": inputClass, "id": "id_executor"}),
@@ -28,12 +28,12 @@ class ApplicationForm(forms.ModelForm):
     initial_sum = forms.FloatField(
         label="Сумма приемки: ", widget=forms.NumberInput(attrs={"class": inputClass})
     )
-    sender_id = forms.ModelChoiceField(
+    sender = forms.ModelChoiceField(
         queryset=LegalEntity.objects.none(),
         label="Юридическое лицо клиента",
         widget=forms.Select(attrs={"class": inputClass, "id": "id_sender"}),
     )
-    receiver_id = forms.ModelChoiceField(
+    receiver = forms.ModelChoiceField(
         queryset=LegalEntity.objects.none(),
         label="Юридическое лицо исполнителя: ",
         widget=forms.Select(attrs={"class": inputClass, "id": "id_receiver"}),
@@ -72,7 +72,7 @@ class ApplicationForm(forms.ModelForm):
         required=False,
         widget=forms.TextInput(attrs={"class": inputClass, "readonly": "readonly"}),
     )
-    referral_procentage = forms.FloatField(
+    referral_percentage = forms.FloatField(
         label="Реф %: ",
         required=False,
         widget=forms.TextInput(attrs={"class": inputClass, "readonly": "readonly"}),
@@ -87,11 +87,11 @@ class ApplicationForm(forms.ModelForm):
         model = Application
         fields = [
             "status",
-            "customer_id",
-            "executor_id",
+            "customer",
+            "executor",
             "initial_sum",
-            "sender_id",
-            "receiver_id",
+            "sender",
+            "receiver",
             "executor_commission",
             "giving_side",
             "commission_with_interest",
@@ -99,36 +99,36 @@ class ApplicationForm(forms.ModelForm):
             "is_documents",
             "sum_with_executors_commission",
             "uncargo_sum",
-            "referral_procentage",
+            "referral_percentage",
             "clean_income",
         ]
 
     def __init__(self, *args, **kwargs):
         super(ApplicationForm, self).__init__(*args, **kwargs)
 
-        if "executor_id" in self.data:
+        if "executor" in self.data:
             try:
-                executor_id = int(self.data.get("executor_id"))
-                self.fields["receiver_id"].queryset = LegalEntity.objects.filter(
+                executor_id = int(self.data.get("executor"))
+                self.fields["receiver"].queryset = LegalEntity.objects.filter(
                     partner_id=executor_id
                 )
             except (ValueError, TypeError):
                 pass
         elif self.instance.pk:
-            self.fields["receiver_id"].queryset = LegalEntity.objects.filter(
-                partner_id=self.instance.executor_id.id
+            self.fields["receiver"].queryset = LegalEntity.objects.filter(
+                partner_id=self.instance.executor.id
             )
 
-        if "customer_id" in self.data:
+        if "customer" in self.data:
             try:
-                customer_id = int(self.data.get("customer_id"))
-                self.fields["sender_id"].queryset = LegalEntity.objects.filter(
+                customer_id = int(self.data.get("customer"))
+                self.fields["sender"].queryset = LegalEntity.objects.filter(
                     partner_id=customer_id
                 )
             except (ValueError, TypeError):
                 pass
         elif self.instance.pk:
-            self.fields["sender_id"].queryset = LegalEntity.objects.filter(
+            self.fields["sender"].queryset = LegalEntity.objects.filter(
                 partner_id=self.instance.customer_id.id
             )
 
@@ -147,14 +147,14 @@ class ApplicationForm(forms.ModelForm):
                     * (self.instance.commission_with_interest - 100)
                     / -100
             )
-            self.fields["referral_procentage"].initial = (
+            self.fields["referral_percentage"].initial = (
                     self.instance.initial_sum
-                    * (self.instance.executor_id.referral_percentage / 100)
+                    * (self.instance.executor.referral_percentage / 100)
             )
             self.fields["clean_income"].initial = (
                     self.fields["sum_with_executors_commission"].initial
                     - self.fields["uncargo_sum"].initial
-                    - self.fields["referral_procentage"].initial
+                    - self.fields["referral_percentage"].initial
             )
 
     def clean_is_documents(self):
@@ -238,7 +238,7 @@ class PartnerModelChoiceField(forms.ModelChoiceField):
 
 
 class LegalEntitiesForm(forms.ModelForm):
-    partner_id = PartnerModelChoiceField(
+    partner = PartnerModelChoiceField(
         queryset=Partner.objects.all(),
         label="Partner",
         widget=forms.Select(attrs={"class": inputClass}),
