@@ -1,6 +1,7 @@
 from django.contrib.auth import login
 
 from django.contrib.auth.forms import UserCreationForm
+from django.http import JsonResponse
 
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -41,7 +42,7 @@ def application_create_view(request):
                 return redirect("transaction_failed")
     else:
         form = ApplicationForm()
-    return render(request, "main/application_form.html", {"form": form})
+    return render(request, "application/application_form.html", {"form": form})
 
 
 def application_update_view(request, pk):
@@ -84,6 +85,22 @@ def legal_entities_create(request):
     else:
         form = LegalEntitiesForm()
         return render(request, "legal/legal_entities_form.html", {"form": form})
+
+
+def legal_entities_data(request):
+    legal_entity_data = LegalEntity.objects.all()
+    data = list(
+        legal_entity_data.values(
+            "id",
+            "name",
+            "partner_id",
+            "tax_number",
+            "legal_entity_percentage",
+            "created_at",
+            "updated_at",
+        )
+    )
+    return JsonResponse(data, safe=False)
 
 
 def partner_list(request):
