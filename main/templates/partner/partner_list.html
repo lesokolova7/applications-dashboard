@@ -8,10 +8,12 @@
             <p class="mt-2 text-sm text-gray-700">Список:</p>
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-            <button type="button"
-                    class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-               <a href="{% url 'partner_create' %}">Добавить партнера</a>
-            </button>
+            <a href="{% url 'partner_create' %}">
+                <button type="button"
+                        class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    Добавить партнера
+                </button>
+            </a>
         </div>
     </div>
     <div class="mt-8 flow-root">
@@ -35,7 +37,8 @@
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ partner.id }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ partner.name }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ partner.referral_percentage }}</td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ partner.is_executor }}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{% if partner.is_executor %}Да{% else %}Нет{% endif %}</td>
+
                     </tr>
                     {% endfor %}
                     </tbody>

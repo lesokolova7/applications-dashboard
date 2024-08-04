@@ -192,46 +192,6 @@ class ApplicationForm(forms.ModelForm):
 
         return cleaned_data
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class PartnerModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.name
@@ -276,7 +236,7 @@ class PartnerForm(forms.ModelForm):
             "name": forms.TextInput(
                 attrs={"class": inputClass, "placeholder": "Введите имя"}
             ),
-            "is_executor": forms.CheckboxInput(attrs={"class": checkboxClass}),
+            "is_executor": forms.CheckboxInput(attrs={"class": ""}),
             "referral_percentage": forms.NumberInput(
                 attrs={"class": inputClass, "placeholder": "Введите %"}
             ),

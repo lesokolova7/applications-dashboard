@@ -35,7 +35,7 @@
                     {% for legal in legals %}
                     <tr>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ legal.id }}</td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ legal.partner_id }}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ legal.partner.name }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ legal.name }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ legal.tax_number }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ legal.legal_entity_percentage }}</td>

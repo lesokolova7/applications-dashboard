@@ -2,7 +2,9 @@
 {% extends "main/base.html" %}
 {% block content %}
 <h1 class="text-base font-semibold leading-6 text-gray-900">{{ form.instance.id|default:"Создать нового партнера:" }}</h1>
-<p class="mt-2 text-sm text-gray-700">Заполни форму:</p>
+<a href="{% url 'partner_list' %}" class="cursor-pointer underline">
+    <- вернуться к списку партнеров
+</a>
 <form method="post" class="mt-5">
     {% csrf_token %}
     <!--    {{ form.as_p }}-->

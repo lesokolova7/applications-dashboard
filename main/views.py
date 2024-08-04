@@ -9,12 +9,8 @@ from .forms import ApplicationForm, LegalEntitiesForm, PartnerForm
 from .models import Application, LegalEntity, Partner
 import logging
 
-
 # Set up logging
 logger = logging.getLogger(__name__)
-
-def home(request):
-    return render(request, "main/home.html")
 
 
 def sign_up(request):
@@ -26,7 +22,7 @@ def sign_up(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect("/home")
+            return redirect("/application/list")
     else:
         form = UserCreationForm()
 
@@ -41,7 +37,7 @@ def application_create_view(request):
             form.update_calculated_fields()
             try:
                 application.save()
-                return redirect("transaction_success")
+                return redirect("application_list")
             except Exception as e:
                 logger.error(f"Error saving application: {e}", exc_info=True)
                 return redirect("transaction_failed")
@@ -66,6 +62,11 @@ def application_update_view(request, pk):
     else:
         form = ApplicationForm(instance=application)
     return render(request, "main/application_form.html", {"form": form})
+
+
+def application_list(request):
+    applications = Application.objects.all()
+    return render(request, "application/application_list.html", {"applications": applications})
 
 
 def transaction_success(request):
