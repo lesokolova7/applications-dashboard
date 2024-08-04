@@ -7,7 +7,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import ApplicationForm, LegalEntitiesForm, PartnerForm
 from .models import Application, LegalEntity, Partner
+import logging
 
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 def home(request):
     return render(request, "main/home.html")
@@ -33,13 +37,14 @@ def application_create_view(request):
     if request.method == "POST":
         form = ApplicationForm(request.POST)
         if form.is_valid():
-
+            # form.is_documents = request.POST.get('is_documents') == 'on'
             application = form.save(commit=False)
             form.update_calculated_fields()
             try:
                 application.save()
                 return redirect("transaction_success")
-            except Exception:
+            except Exception as e:
+                logger.error(f"Error saving application: {e}", exc_info=True)
                 return redirect("transaction_failed")
     else:
         form = ApplicationForm()
@@ -56,7 +61,8 @@ def application_update_view(request, pk):
             try:
                 application.save()
                 return redirect("transaction_success")
-            except Exception:
+            except Exception as e:
+                logger.error(f"Error saving application: {e}", exc_info=True)
                 return redirect("transaction_failed")
     else:
         form = ApplicationForm(instance=application)

@@ -72,7 +72,7 @@ class ApplicationForm(forms.ModelForm):
         required=False,
         widget=forms.TextInput(attrs={"class": inputClass, "readonly": "readonly"}),
     )
-    referral_percentage = forms.FloatField(
+    referral_procentage = forms.FloatField(
         label="Реф %: ",
         required=False,
         widget=forms.TextInput(attrs={"class": inputClass, "readonly": "readonly"}),
@@ -99,7 +99,7 @@ class ApplicationForm(forms.ModelForm):
             "is_documents",
             "sum_with_executors_commission",
             "uncargo_sum",
-            "referral_percentage",
+            "referral_procentage",
             "clean_income",
         ]
 
@@ -147,14 +147,14 @@ class ApplicationForm(forms.ModelForm):
                     * (self.instance.commission_with_interest - 100)
                     / -100
             )
-            self.fields["referral_percentage"].initial = (
+            self.fields["referral_procentage"].initial = (
                     self.instance.initial_sum
                     * (self.instance.executor_id.referral_percentage / 100)
             )
             self.fields["clean_income"].initial = (
                     self.fields["sum_with_executors_commission"].initial
                     - self.fields["uncargo_sum"].initial
-                    - self.fields["referral_percentage"].initial
+                    - self.fields["referral_procentage"].initial
             )
 
     def clean_is_documents(self):
@@ -191,6 +191,45 @@ class ApplicationForm(forms.ModelForm):
             cleaned_data["clean_income"] = clean_income
 
         return cleaned_data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class PartnerModelChoiceField(forms.ModelChoiceField):

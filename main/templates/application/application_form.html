@@ -117,7 +117,7 @@
             let executorCommission = parseFloat($('#id_executor_commission').val()) || 0;
             let commissionWithInterest = parseFloat($('#id_commission_with_interest').val()) || 0;
             let executorPercentage = parseFloat($('#id_executor').find('option:selected').data('referral')) || 0;
-
+            console.log(executorPercentage, "executorPercentage");
             let sumWithExecutorsCommission = initialSum * (executorCommission - 100) / -100;
             let uncargoSum = initialSum * (commissionWithInterest - 100) / -100;
 
@@ -126,7 +126,7 @@
 
             $('#id_sum_with_executors_commission').val(sumWithExecutorsCommission.toFixed(2));
             $('#id_uncargo_sum').val(uncargoSum.toFixed(2));
-            $('#id_referral_percentage').val(referralPercentage.toFixed(2));
+            $('#id_referral_procentage').val(referralPercentage.toFixed(2));
             $('#id_clean_income').val(cleanIncome.toFixed(2));
         }
 
