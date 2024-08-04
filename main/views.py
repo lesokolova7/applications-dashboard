@@ -5,8 +5,8 @@ from django.http import JsonResponse
 
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import ApplicationForm, LegalEntitiesForm, PartnerForm
-from .models import Application, LegalEntity, Partner
+from .forms import ApplicationForm, LegalEntitiesForm, PartnerForm, IncomeForm, OutcomeForm
+from .models import Application, LegalEntity, Partner, Income, Outcome
 import logging
 
 # Set up logging
@@ -111,8 +111,9 @@ def legal_entities_data(request):
 
 
 def partner_list(request):
-    partners = Partner.objects.all()
-    return render(request, "partner/partner_list.html", {"partners": partners})
+    executors = Partner.objects.filter(is_executor=True)
+    customers = Partner.objects.filter(is_executor=False)
+    return render(request, "partner/partner_list.html", {"executors": executors, "customers": customers})
 
 
 def partner_create(request):
@@ -125,3 +126,37 @@ def partner_create(request):
     else:
         form = PartnerForm()
         return render(request, "partner/partner_form.html", {"form": form})
+
+
+def income_list(request):
+    incomes = Income.objects.all()
+    return render(request, "income/income_list.html", {"incomes": incomes})
+
+
+def outcome_list(request):
+    outcomes = Outcome.objects.all()
+    return render(request, "outcome/outcome_list.html", {"outcomes": outcomes})
+
+
+def income_create(request):
+    if request.method == "POST":
+        form = IncomeForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("income_list")
+    else:
+        form = IncomeForm()
+        return render(request, "income/income_form.html", {"form": form})
+
+
+def outcome_create(request):
+    if request.method == "POST":
+        form = OutcomeForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("outcome_list")
+    else:
+        form = OutcomeForm()
+        return render(request, "outcome/outcome_form.html", {"form": form})

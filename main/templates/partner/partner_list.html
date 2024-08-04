@@ -19,6 +19,36 @@
     <div class="mt-8 flow-root">
         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                <p class="bold text-xl mb-5">Заказчики</p>
+                <table class="min-w-full divide-y  mb-10">
+                    <thead>
+                    <tr>
+                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                            Id
+                        </th>
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Имя</th>
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Реф. %</th>
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Исполнитель
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                    {% for customer in customers %}
+                    <tr>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ customer.id }}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ customer.name }}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            {{ customer.referral_percentage }}
+                        </td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            {% if customer.is_executor %}Да{% else %}Нет{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <p class="bold text-xl mb-5">Исполнители</p>
                 <table class="min-w-full divide-y divide-gray-300">
                     <thead>
                     <tr>
@@ -32,12 +62,16 @@
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                    {% for partner in partners %}
+                    {% for executor in executors %}
                     <tr>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ partner.id }}</td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ partner.name }}</td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ partner.referral_percentage }}</td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{% if partner.is_executor %}Да{% else %}Нет{% endif %}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ executor.id }}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ executor.name }}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            {{ executor.referral_percentage }}
+                        </td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            {% if executor.is_executor %}Да{% else %}Нет{% endif %}
+                        </td>
 
                     </tr>
                     {% endfor %}

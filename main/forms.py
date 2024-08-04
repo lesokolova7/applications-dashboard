@@ -1,5 +1,5 @@
 from django import forms
-from .models import Application, ApplicationChoices, Partner, LegalEntity
+from .models import Application, ApplicationChoices, Partner, LegalEntity, Outcome, Income
 
 import logging
 
@@ -192,6 +192,7 @@ class ApplicationForm(forms.ModelForm):
 
         return cleaned_data
 
+
 class PartnerModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.name
@@ -244,3 +245,49 @@ class PartnerForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PartnerForm, self).__init__(*args, **kwargs)
+
+
+class IncomeForm(forms.ModelForm):
+    executor = PartnerModelChoiceField(
+        queryset=Partner.objects.filter(is_executor=True),
+        label="Исполнитель",
+        widget=forms.Select(attrs={"class": inputClass, "placeholder": "Введите исполнителя"}),
+    )
+
+    class Meta:
+        model = Income
+        fields = "__all__"
+        labels = {
+            "amount": "Сумма",
+        }
+        widgets = {
+            "amount": forms.NumberInput(
+                attrs={"class": inputClass, "placeholder": "Введите сумму"}
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(IncomeForm, self).__init__(*args, **kwargs)
+
+
+class OutcomeForm(forms.ModelForm):
+    customer = PartnerModelChoiceField(
+        queryset=Partner.objects.filter(is_executor=False),
+        label="Заказчик",
+        widget=forms.Select(attrs={"class": inputClass, "placeholder": "Введите исполнителя"}),
+    )
+
+    class Meta:
+        model = Outcome
+        fields = "__all__"
+        labels = {
+            "amount": "Сумма",
+        }
+        widgets = {
+            "amount": forms.NumberInput(
+                attrs={"class": inputClass, "placeholder": "Введите сумму"}
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(OutcomeForm, self).__init__(*args, **kwargs)
