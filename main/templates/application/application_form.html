@@ -9,16 +9,20 @@
         <div class="flex flex-col gap-2">
             <div class="flex flex-row gap-5 items-center">
                 <label class="block text-sm font-medium leading-6 text-gray-900 min-w-fit">{{ field.label }}</label>
-                {% if field.name == 'giving_side' %}
-                    <select id="id_{{ field.name }}" name="{{ field.name }}">
-                        {% for option in field.field.queryset %}
-                        <option value="{{ option.id }}" data-referral="{{ option.referral_percentage }}">
-                            {{ option.name }}
-                        </option>
-                        {% endfor %}
-                    </select>
+                {% if field.name == 'executor_id' %}
+                <select id="id_executor" name="{{ field.name }}"
+                        class="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <option value="">
+                        -----------
+                    </option>
+                    {% for option in field.field.queryset %}
+                    <option value="{{ option.id }}" data-referral="{{ option.referral_percentage }}">
+                        {{ option.name }}
+                    </option>
+                    {% endfor %}
+                </select>
                 {% else %}
-                    {{ field }}
+                {{ field }}
                 {% endif %}
             </div>
         </div>
@@ -37,24 +41,35 @@
             if (receiverId) {
                 $.ajax({
                     url: '{% url "legal_entities_data" %}',
-
                     success: function (data) {
-                        if (!data.some(el => el.partner_id.toString() === $('#id_executor').val().toString())) {
-                            $('#id_receiver').html('<option value="">' + "Нет юр лиц" + '</option>');
-                            $('#id_receiver').prop("disabled", true)
-                            $('#id_receiver').change();
-                            return;
-                        }
+                        let hasValidOptions = false;
+                        $('#id_receiver').empty();  // Clear all current options
+
+                        // Add a default empty option
+                        $('#id_receiver').append('<option value="">' + "-----------" + '</option>');
 
                         $.each(data, function (index, legal) {
                             if (legal.partner_id.toString() === $('#id_executor').val().toString()) {
                                 $('#id_receiver').append('<option value="' + legal.id + '">' + legal.name + '</option>');
+                                hasValidOptions = true;
                             }
                         });
+
+                        if (!hasValidOptions) {
+                            $('#id_receiver').append('<option value="">' + "Нет юр лиц" + '</option>');
+                            $('#id_receiver').prop("disabled", true);
+                        } else {
+                            $('#id_receiver').prop("disabled", false);
+                        }
+
                         $('#id_receiver').change();
                     }
                 });
             } else {
+                $('#id_receiver').empty();
+                $('#id_receiver').append('<option value="">' + "-----------" + '</option>');
+                $('#id_receiver').prop("disabled", true);
+                $('#id_receiver').change();
             }
         });
 
@@ -64,37 +79,50 @@
             if (customerId) {
                 $.ajax({
                     url: '{% url "legal_entities_data" %}',
-
                     success: function (data) {
-                        if (!data.some(el => el.partner_id.toString() === $('#id_customer').val().toString())) {
-                            $('#id_sender').html('<option value="">' + "Нет юр лиц" + '</option>');
-                            $('#id_sender').prop("disabled", true)
-                            $('#id_sender').change();
-                            return;
-                        }
+                        let hasValidOptions = false;
+                        $('#id_sender').empty();  // Clear all current options
+
+                        // Add a default empty option
+                        $('#id_sender').append('<option value="">' + "-----------" + '</option>');
 
                         $.each(data, function (index, legal) {
                             if (legal.partner_id.toString() === $('#id_customer').val().toString()) {
                                 $('#id_sender').append('<option value="' + legal.id + '">' + legal.name + '</option>');
+                                hasValidOptions = true;
                             }
                         });
+
+                        if (!hasValidOptions) {
+                            $('#id_sender').append('<option value="">' + "Нет юр лиц" + '</option>');
+                            $('#id_sender').prop("disabled", true);
+                        } else {
+                            $('#id_sender').prop("disabled", false);
+                        }
+
                         $('#id_sender').change();
                     }
                 });
             } else {
+                $('#id_sender').empty();
+                $('#id_sender').append('<option value="">' + "-----------" + '</option>');
+                $('#id_sender').prop("disabled", true);
+                $('#id_sender').change();
             }
         });
 
-         function updateCalculatedFields() {
-            var initialSum = parseFloat($('#id_initial_sum').val()) || 0;
-            var executorCommission = parseFloat($('#id_executor_commission').val()) || 0;
-            var commissionWithInterest = parseFloat($('#id_commission_with_interest').val()) || 0;
-            var givingSidePercentage = parseFloat($('#id_giving_side').find('option:selected').data('referral')) || 0;
 
-            var sumWithExecutorsCommission = initialSum * (executorCommission - 100) / -100;
-            var uncargoSum = initialSum * (commissionWithInterest - 100) / -100;
-            var referralPercentage = initialSum * givingSidePercentage / 100;
-            var cleanIncome = sumWithExecutorsCommission - uncargoSum - referralPercentage;
+        function updateCalculatedFields() {
+            let initialSum = parseFloat($('#id_initial_sum').val()) || 0;
+            let executorCommission = parseFloat($('#id_executor_commission').val()) || 0;
+            let commissionWithInterest = parseFloat($('#id_commission_with_interest').val()) || 0;
+            let executorPercentage = parseFloat($('#id_executor').find('option:selected').data('referral')) || 0;
+
+            let sumWithExecutorsCommission = initialSum * (executorCommission - 100) / -100;
+            let uncargoSum = initialSum * (commissionWithInterest - 100) / -100;
+
+            let referralPercentage = initialSum * (executorPercentage / 100);
+            let cleanIncome = sumWithExecutorsCommission - uncargoSum - referralPercentage;
 
             $('#id_sum_with_executors_commission').val(sumWithExecutorsCommission.toFixed(2));
             $('#id_uncargo_sum').val(uncargoSum.toFixed(2));
@@ -102,15 +130,14 @@
             $('#id_clean_income').val(cleanIncome.toFixed(2));
         }
 
-        $('#id_initial_sum, #id_executor_commission, #id_commission_with_interest').on('input', function() {
+        $('#id_initial_sum, #id_executor_commission, #id_commission_with_interest, #id_executor').on('input', function () {
             updateCalculatedFields();
         });
 
-        $('#id_giving_side').on('change', function() {
+        $('#id_giving_side').on('change', function () {
             updateCalculatedFields();
         });
 
-        // Ensure that initial calculations are correct if form is pre-filled
         updateCalculatedFields();
     });
 

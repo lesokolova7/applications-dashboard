@@ -47,6 +47,7 @@ class ApplicationForm(forms.ModelForm):
         label="Выдающая сторона: ",
         widget=forms.Select(attrs={"class": inputClass}),
     )
+
     commission_with_interest = forms.FloatField(
         label="Комиссия с учетом нашего интереса: ",
         widget=forms.NumberInput(attrs={"class": inputClass}),
@@ -67,12 +68,12 @@ class ApplicationForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"class": inputClass, "readonly": "readonly"}),
     )
     uncargo_sum = forms.FloatField(
-        label="Сумма без отгрузки: ",
+        label="Сумма отгрузки: ",
         required=False,
         widget=forms.TextInput(attrs={"class": inputClass, "readonly": "readonly"}),
     )
     referral_percentage = forms.FloatField(
-        label="Процент вознаграждения: ",
+        label="Реф %: ",
         required=False,
         widget=forms.TextInput(attrs={"class": inputClass, "readonly": "readonly"}),
     )
@@ -148,14 +149,17 @@ class ApplicationForm(forms.ModelForm):
             )
             self.fields["referral_percentage"].initial = (
                     self.instance.initial_sum
-                    * self.instance.giving_side.referral_percentage
-                    / 100
+                    * (self.instance.executor_id.referral_percentage / 100)
             )
             self.fields["clean_income"].initial = (
                     self.fields["sum_with_executors_commission"].initial
                     - self.fields["uncargo_sum"].initial
                     - self.fields["referral_percentage"].initial
             )
+
+    def clean_is_documents(self):
+        is_documents = self.cleaned_data.get('is_documents')
+        return bool(is_documents)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -218,12 +222,6 @@ class LegalEntitiesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(LegalEntitiesForm, self).__init__(*args, **kwargs)
-
-    #     self.fields['partner_id'] = forms.ModelChoiceField(
-    #         queryset=Partner.objects.all(),
-    #         widget=forms.Select(attrs={'class': 'form-control'}),
-    #         label_from_instance=lambda obj: obj.name  # This will display the partner's name in the select field
-    #     )
 
 
 class PartnerForm(forms.ModelForm):
