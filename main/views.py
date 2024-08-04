@@ -4,8 +4,8 @@ from django.contrib.auth.forms import UserCreationForm
 
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import ApplicationForm
-from .models import Application
+from .forms import ApplicationForm, LegalEntitiesForm, PartnerForm
+from .models import Application, LegalEntity, Partner
 
 
 def home(request):
@@ -67,3 +67,37 @@ def transaction_success(request):
 
 def transaction_failed(request):
     return render(request, "main/transaction_failed.html")
+
+
+def legal_entities_list(request):
+    legals = LegalEntity.objects.all()
+    return render(request, 'legal/legal_entities_list.html', {'legals': legals})
+
+
+def legal_entities_create(request):
+    if request.method == "POST":
+        form = LegalEntitiesForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('legal/legal_entities_list')
+    else:
+        form = LegalEntitiesForm()
+        return render(request, 'legal/legal_entities_form.html', {'form': form})
+
+
+def partner_list(request):
+    partners = Partner.objects.all()
+    return render(request, 'partner/partner_list.html', {'partners': partners})
+
+
+def partner_create(request):
+    if request.method == "POST":
+        form = PartnerForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('partner/partner_list')
+    else:
+        form = PartnerForm()
+        return render(request, 'partner/partner_form.html', {'form': form})
