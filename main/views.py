@@ -46,24 +46,6 @@ def application_create_view(request):
     return render(request, "application/application_form.html", {"form": form})
 
 
-def application_update_view(request, pk):
-    application = get_object_or_404(Application, pk=pk)
-    if request.method == "POST":
-        form = ApplicationForm(request.POST, instance=application)
-        if form.is_valid():
-            application = form.save(commit=False)
-            form.update_calculated_fields()
-            try:
-                application.save()
-                return redirect("transaction_success")
-            except Exception as e:
-                logger.error(f"Error saving application: {e}", exc_info=True)
-                return redirect("transaction_failed")
-    else:
-        form = ApplicationForm(instance=application)
-    return render(request, "main/application_form.html", {"form": form})
-
-
 def application_list(request):
     applications = Application.objects.all()
     return render(request, "application/application_list.html", {"applications": applications})
@@ -79,6 +61,12 @@ def application_update(request, pk):
     else:
         form = ApplicationForm(instance=application_entity)
     return render(request, 'application/application_form.html', {'form': form})
+
+
+def application_delete(request, pk):
+    application = get_object_or_404(Application, pk=pk)
+    application.delete()
+    return redirect('application_list')
 
 
 def transaction_success(request):
@@ -134,6 +122,12 @@ def legal_entities_update(request, pk):
     return render(request, 'legal/legal_entities_form.html', {'form': form})
 
 
+def legal_entities_delete(request, pk):
+    legal_entity = get_object_or_404(LegalEntity, pk=pk)
+    legal_entity.delete()
+    return redirect('legal_entities_list')
+
+
 def partner_list(request):
     executors = Partner.objects.filter(is_executor=True)
     customers = Partner.objects.filter(is_executor=False)
@@ -162,6 +156,12 @@ def partner_update(request, pk):
     else:
         form = PartnerForm(instance=partner_entity)
     return render(request, 'partner/partner_form.html', {'form': form})
+
+
+def partner_delete(request, pk):
+    partner = get_object_or_404(Partner, pk=pk)
+    partner.delete()
+    return redirect('partner_list')
 
 
 def income_list(request):
@@ -220,3 +220,15 @@ def outcome_update(request, pk):
     else:
         form = OutcomeForm(instance=outcome_entity)
     return render(request, 'outcome/outcome_form.html', {'form': form})
+
+
+def income_delete(request, pk):
+    income = get_object_or_404(Income, pk=pk)
+    income.delete()
+    return redirect('income_list')
+
+
+def outcome_delete(request, pk):
+    outcome = get_object_or_404(Outcome, pk=pk)
+    outcome.delete()
+    return redirect('outcome_list')

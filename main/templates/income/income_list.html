@@ -31,6 +31,7 @@
                             создания
                         </th>
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"></th>
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"></th>
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
@@ -44,7 +45,16 @@
                             <a href="{% url 'income_update' income.pk %}">
                                 <button  class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                     Редактировать
-                                </button></a>
+                                </button>
+                            </a>
+                        </td>
+                        <td>
+                            <form action="{% url 'income_delete' income.pk %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    Удалить
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
