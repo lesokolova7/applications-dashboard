@@ -69,6 +69,18 @@ def application_list(request):
     return render(request, "application/application_list.html", {"applications": applications})
 
 
+def application_update(request, pk):
+    application_entity = get_object_or_404(Application, pk=pk)
+    if request.method == "POST":
+        form = ApplicationForm(request.POST, instance=application_entity)
+        if form.is_valid():
+            form.save()
+            return redirect('application_list')
+    else:
+        form = ApplicationForm(instance=application_entity)
+    return render(request, 'application/application_form.html', {'form': form})
+
+
 def transaction_success(request):
     return render(request, "main/transaction_success.html")
 
@@ -110,6 +122,18 @@ def legal_entities_data(request):
     return JsonResponse(data, safe=False)
 
 
+def legal_entities_update(request, pk):
+    legal_entities_entity = get_object_or_404(LegalEntity, pk=pk)
+    if request.method == "POST":
+        form = LegalEntitiesForm(request.POST, instance=legal_entities_entity)
+        if form.is_valid():
+            form.save()
+            return redirect('legal_entities_list')
+    else:
+        form = LegalEntitiesForm(instance=legal_entities_entity)
+    return render(request, 'legal/legal_entities_form.html', {'form': form})
+
+
 def partner_list(request):
     executors = Partner.objects.filter(is_executor=True)
     customers = Partner.objects.filter(is_executor=False)
@@ -126,6 +150,18 @@ def partner_create(request):
     else:
         form = PartnerForm()
         return render(request, "partner/partner_form.html", {"form": form})
+
+
+def partner_update(request, pk):
+    partner_entity = get_object_or_404(Partner, pk=pk)
+    if request.method == "POST":
+        form = PartnerForm(request.POST, instance=partner_entity)
+        if form.is_valid():
+            form.save()
+            return redirect('partner_list')
+    else:
+        form = PartnerForm(instance=partner_entity)
+    return render(request, 'partner/partner_form.html', {'form': form})
 
 
 def income_list(request):
@@ -160,3 +196,27 @@ def outcome_create(request):
     else:
         form = OutcomeForm()
         return render(request, "outcome/outcome_form.html", {"form": form})
+
+
+def income_update(request, pk):
+    income_entity = get_object_or_404(Income, pk=pk)
+    if request.method == "POST":
+        form = IncomeForm(request.POST, instance=income_entity)
+        if form.is_valid():
+            form.save()
+            return redirect('income_list')
+    else:
+        form = IncomeForm(instance=income_entity)
+    return render(request, 'income/income_form.html', {'form': form})
+
+
+def outcome_update(request, pk):
+    outcome_entity = get_object_or_404(Outcome, pk=pk)
+    if request.method == "POST":
+        form = OutcomeForm(request.POST, instance=outcome_entity)
+        if form.is_valid():
+            form.save()
+            return redirect('outcome_list')
+    else:
+        form = OutcomeForm(instance=outcome_entity)
+    return render(request, 'outcome/outcome_form.html', {'form': form})

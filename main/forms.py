@@ -129,7 +129,7 @@ class ApplicationForm(forms.ModelForm):
                 pass
         elif self.instance.pk:
             self.fields["sender"].queryset = LegalEntity.objects.filter(
-                partner_id=self.instance.customer_id.id
+                partner_id=self.instance.customer_id
             )
 
         self.update_calculated_fields()

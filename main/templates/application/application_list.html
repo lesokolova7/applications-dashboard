@@ -71,6 +71,8 @@
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Дата
                             последнего изменения
                         </th>
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                        </th>
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
@@ -116,6 +118,14 @@
                         </td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ application.created_at }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ application.created_at }}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            <a href="{% url 'application_update' application.pk %}">
+                                <button class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    Редактировать
+                                </button>
+                            </a>
+                            </a>
+                        </td>
                     </tr>
                     {% endfor %}
                     </tbody>
