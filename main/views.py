@@ -1,11 +1,12 @@
 from django.contrib.auth import login
 
 from django.contrib.auth.forms import UserCreationForm
+from django.db.models import Q
 from django.http import JsonResponse
 
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import ApplicationForm, LegalEntitiesForm, PartnerForm, IncomeForm, OutcomeForm
+from .forms import ApplicationForm, LegalEntitiesForm, PartnerForm, IncomeForm, OutcomeForm, ApplicationFilterForm, IncomeFilterForm
 from .models import Application, LegalEntity, Partner, Income, Outcome
 import logging
 
@@ -48,7 +49,45 @@ def application_create_view(request):
 
 def application_list(request):
     applications = Application.objects.all()
-    return render(request, "application/application_list.html", {"applications": applications})
+    filter_form = ApplicationFilterForm(request.GET)
+
+    if filter_form.is_valid():
+        customer = filter_form.cleaned_data.get('customer')
+        executor = filter_form.cleaned_data.get('executor')
+        legal_entity = filter_form.cleaned_data.get('legal_entity')
+        start_date = filter_form.cleaned_data.get('start_date')
+        end_date = filter_form.cleaned_data.get('end_date')
+        sort_by_sum = request.GET.get('sort_by_sum')
+
+        if customer:
+            applications = applications.filter(customer=customer)
+        if executor:
+            applications = applications.filter(executor=executor)
+        if legal_entity:
+            applications = applications.filter(
+                Q(receiver=legal_entity) |
+                Q(sender=legal_entity)
+            )
+        if start_date and end_date:
+            applications = applications.filter(
+                created_date__range=[start_date, end_date]
+            )
+        elif start_date:
+            applications = applications.filter(created_date__gte=start_date)
+        elif end_date:
+            applications = applications.filter(created_date__lte=end_date)
+
+        if sort_by_sum:
+            if sort_by_sum == 'asc':
+                applications = applications.order_by('initial_sum')
+            elif sort_by_sum == 'desc':
+                applications = applications.order_by('-initial_sum')
+
+    if not sort_by_sum:
+        applications = applications.order_by('-created_date')
+
+    return render(request, "application/application_list.html",
+                  {"applications": applications, "filter_form": filter_form})
 
 
 def application_update(request, pk):
@@ -166,12 +205,56 @@ def partner_delete(request, pk):
 
 def income_list(request):
     incomes = Income.objects.all()
-    return render(request, "income/income_list.html", {"incomes": incomes})
+    filter_form = IncomeFilterForm(request.GET)
+
+    if filter_form.is_valid():
+        executor = filter_form.cleaned_data.get('executor')
+        sort_by_amount = request.GET.get('sort_by_amount')
+        sort_by_created_at = request.GET.get('sort_by_created_at')
+
+        if executor:
+            incomes = incomes.filter(executor=executor)
+
+        if sort_by_amount:
+            if sort_by_amount == 'asc':
+                incomes = incomes.order_by('amount')
+            elif sort_by_amount == 'desc':
+                incomes = incomes.order_by('-amount')
+
+        if sort_by_created_at:
+            if sort_by_created_at == 'asc':
+                incomes = incomes.order_by('created_at')
+            elif sort_by_created_at == 'desc':
+                incomes = incomes.order_by('-created_at')
+
+    return render(request, "income/income_list.html", {"incomes": incomes, "filter_form": filter_form})
 
 
 def outcome_list(request):
     outcomes = Outcome.objects.all()
-    return render(request, "outcome/outcome_list.html", {"outcomes": outcomes})
+    filter_form = OutcomeForm(request.GET)
+
+    if filter_form.is_valid():
+        executor = filter_form.cleaned_data.get('customer')
+        sort_by_amount = request.GET.get('sort_by_amount')
+        sort_by_created_at = request.GET.get('sort_by_created_at')
+
+        if executor:
+            outcomes = outcomes.filter(executor=executor)
+
+        if sort_by_amount:
+            if sort_by_amount == 'asc':
+                outcomes = outcomes.order_by('amount')
+            elif sort_by_amount == 'desc':
+                outcomes = outcomes.order_by('-amount')
+
+        if sort_by_created_at:
+            if sort_by_created_at == 'asc':
+                outcomes = outcomes.order_by('created_at')
+            elif sort_by_created_at == 'desc':
+                outcomes = outcomes.order_by('-created_at')
+
+    return render(request, "outcome/outcome_list.html", {"outcomes": outcomes, "filter_form": filter_form})
 
 
 def income_create(request):

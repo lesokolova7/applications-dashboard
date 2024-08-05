@@ -6,7 +6,6 @@
     <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
             <h1 class="text-base font-semibold leading-6 text-gray-900">Заявки</h1>
-            <p class="mt-2 text-sm text-gray-700">Список:</p>
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
             <a href="{% url 'application_create' %}">
@@ -17,58 +16,104 @@
             </a>
         </div>
     </div>
+    <form method="get" class="mt-4">
+        {{ filter_form.as_p }}
+        <div class="mt-4 flex justify-between items-center">
+            {% if request.GET.sort_by_sum == 'asc' %}
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'sort_by_sum' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort_by_sum=desc">
+                <button type="button"
+                        class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                    Сортировать по убыванию суммы
+                </button>
+            </a>
+            {% else %}
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'sort_by_sum' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort_by_sum=asc">
+                <button type="button"
+                        class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                    Сортировать по возрастанию суммы
+                </button>
+            </a>
+            {% endif %}
+            <button type="submit" class="block w-fit px-2.5 bg-indigo-600 text-white py-2 rounded-md">Применить</button>
+        </div>
+    </form>
+    <div class="mt-4">
+    </div>
     <div class="mt-8 flow-root">
         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                 <table class="min-w-full divide-y divide-gray-300">
                     <thead>
                     <tr>
-                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                        <th scope="col"
+                            class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0 min-w-[100px]">
                             Id
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Статус</th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Дата приема
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Статус
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Дата
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Дата приема
+                        </th>
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Дата
                             исполнения
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Заказчик</th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Исполнитель
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Заказчик
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Сумма приема
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Исполнитель
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Принимающий
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Сумма приема
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Отправитель
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Принимающий
+                        </th>
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Отправитель
                         </th>
 
 
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Комиссия
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Комиссия
                             исполняющего
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Сумма с
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Сумма с
                             комиссией исполнителя
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Сторона
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Сторона
                             выдающая
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Комиссия
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Комиссия
                             вместе с нашим интересом
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Сумма
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Сумма
                             отгрузки
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">% Рефералки
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            % Рефералки
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Чистый доход
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Чистый доход
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Комментарий
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Комментарий
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Документы</th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Дата
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Документы
+                        </th>
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Дата
                             создания
                         </th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Дата
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 min-w-[200px]">
+                            Дата
                             последнего изменения
                         </th>
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -128,9 +173,11 @@
                             </a>
                         </td>
                         <td>
-                            <form action="{% url 'application_delete' application.pk %}" method="post" style="display:inline;">
+                            <form action="{% url 'application_delete' application.pk %}" method="post"
+                                  style="display:inline;">
                                 {% csrf_token %}
-                                <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                <button type="submit"
+                                        class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                     Удалить
                                 </button>
                             </form>

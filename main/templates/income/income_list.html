@@ -16,6 +16,57 @@
             </a>
         </div>
     </div>
+
+<div class="mt-5 flex flex-col gap-5">
+    <form method="get" class="flex flex-wrap gap-5">
+        <!-- Filter Fields -->
+        <div class="flex flex-col gap-3">
+            <p>{{ filter_form.executor.label_tag }}</p>
+            {{ filter_form.executor }}
+        </div>
+        <!-- Apply Filters Button -->
+        <div class="flex items-end">
+            <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Применить
+            </button>
+        </div>
+    </form>
+
+    <!-- Sort Buttons -->
+    <div class="flex gap-3">
+        {% if request.GET.sort_by_amount == 'asc' %}
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'sort_by_amount' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort_by_amount=desc">
+                <button type="button"
+                        class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                    Сортировать по убыванию суммы
+                </button>
+            </a>
+        {% else %}
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'sort_by_amount' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort_by_amount=asc">
+                <button type="button"
+                        class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                    Сортировать по возрастанию суммы
+                </button>
+            </a>
+        {% endif %}
+
+        {% if request.GET.sort_by_created_at == 'asc' %}
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'sort_by_created_at' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort_by_created_at=desc">
+                <button type="button"
+                        class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                    Сортировать по убыванию даты создания
+                </button>
+            </a>
+        {% else %}
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'sort_by_created_at' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort_by_created_at=asc">
+                <button type="button"
+                        class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                    Сортировать по возрастанию даты создания
+                </button>
+            </a>
+        {% endif %}
+    </div>
+</div>
     <div class="mt-8 flow-root">
         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
