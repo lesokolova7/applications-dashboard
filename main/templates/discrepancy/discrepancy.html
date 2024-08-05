@@ -1,0 +1,43 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+<h1>Discrepancy Tracking</h1>
+<div class="form-group">
+    <label for="role">Role</label>
+    <select id="role" name="role" class="form-control" onchange="updatePartnerList()">
+        <option value="executor">Executor</option>
+        <option value="customer">Customer</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="partner">Partner</label>
+    <select id="partner" name="partner" class="form-control">
+        <option value="">Select Partner</option>
+    </select>
+</div>
+
+
+<script>
+    function updatePartnerList() {
+        const role = document.getElementById('role').value;
+        const partnerSelect = document.getElementById('partner');
+        partnerSelect.innerHTML = '<option value="">Select Partner</option>';
+
+        fetch(`/partner/data?role=${role}`)
+            .then(response => response.json())
+            .then(data => {
+                data.partners.forEach(partner => {
+                    const option = document.createElement('option');
+                    option.value = partner.id;
+                    option.textContent = partner.name;
+                    partnerSelect.appendChild(option);
+                });
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updatePartnerList();
+    });
+</script>
+{% endblock %}

@@ -28,6 +28,8 @@
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Имя</th>
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">ИНН</th>
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">%</th>
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"></th>
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"></th>
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
@@ -38,7 +40,24 @@
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ legal.partner.name }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ legal.name }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ legal.tax_number }}</td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ legal.legal_entity_percentage }}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            {{ legal.legal_entity_percentage }}
+                        </td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            <a href="{% url 'legal_entities_update' legal.pk %}">
+                                <button class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    Редактировать
+                                </button>
+                            </a>
+                        </td>
+                        <td>
+                            <form action="{% url 'legal_entities_delete' legal.pk %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    Удалить
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                     {% endfor %}
                     </tbody>

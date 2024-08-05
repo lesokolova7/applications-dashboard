@@ -1,5 +1,5 @@
 from django import forms
-from .models import Application, ApplicationChoices, Partner, LegalEntity
+from .models import Application, ApplicationChoices, Partner, LegalEntity, Outcome, Income
 
 import logging
 
@@ -129,7 +129,7 @@ class ApplicationForm(forms.ModelForm):
                 pass
         elif self.instance.pk:
             self.fields["sender"].queryset = LegalEntity.objects.filter(
-                partner_id=self.instance.customer_id.id
+                partner_id=self.instance.customer_id
             )
 
         self.update_calculated_fields()
@@ -244,3 +244,101 @@ class PartnerForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PartnerForm, self).__init__(*args, **kwargs)
+
+
+class IncomeForm(forms.ModelForm):
+    executor = PartnerModelChoiceField(
+        queryset=Partner.objects.filter(is_executor=True),
+        label="Исполнитель",
+        widget=forms.Select(attrs={"class": inputClass, "placeholder": "Введите исполнителя"}),
+    )
+
+    class Meta:
+        model = Income
+        fields = "__all__"
+        labels = {
+            "amount": "Сумма",
+        }
+        widgets = {
+            "amount": forms.NumberInput(
+                attrs={"class": inputClass, "placeholder": "Введите сумму"}
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(IncomeForm, self).__init__(*args, **kwargs)
+
+
+class OutcomeForm(forms.ModelForm):
+    customer = PartnerModelChoiceField(
+        queryset=Partner.objects.filter(is_executor=False),
+        label="Заказчик",
+        widget=forms.Select(attrs={"class": inputClass, "placeholder": "Введите исполнителя"}),
+    )
+
+    class Meta:
+        model = Outcome
+        fields = "__all__"
+        labels = {
+            "amount": "Сумма",
+        }
+        widgets = {
+            "amount": forms.NumberInput(
+                attrs={"class": inputClass, "placeholder": "Введите сумму"}
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(OutcomeForm, self).__init__(*args, **kwargs)
+
+
+class ApplicationFilterForm(forms.Form):
+    customer = forms.ModelChoiceField(
+        queryset=Partner.objects.filter(is_executor=False), required=False, label='Заказчик',
+        widget=forms.Select(attrs={"class": inputClass})
+    )
+    executor = forms.ModelChoiceField(
+        queryset=Partner.objects.all().filter(is_executor=True), required=False, label='Исполнитель',
+        widget=forms.Select(attrs={"class": inputClass})
+    )
+
+    start_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date', "class": inputClass}),
+                                 label='Дата начала')
+    end_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date', "class": inputClass}),
+                               label='Дата окончания')
+
+    legal_entity = forms.ModelChoiceField(
+        queryset=LegalEntity.objects.all(), required=False, label='Юр лицо',
+        widget=forms.Select(attrs={"class": inputClass}),
+    )
+
+
+class IncomeFilterForm(forms.Form):
+    executor = forms.ModelChoiceField(
+        queryset=Partner.objects.filter(is_executor=True), required=False, label='Исполнитель'
+    )
+
+    sort_by_amount = forms.ChoiceField(
+        choices=[('asc', 'По возрастанию'), ('desc', 'По убыванию')],
+        required=False,
+        label='Сортировать по сумме'
+    )
+
+    sort_by_created_at = forms.ChoiceField(
+        choices=[('asc', 'По возрастанию даты'), ('desc', 'По убыванию даты')],
+        required=False,
+        label='Сортировать по дате создания'
+    )
+
+
+class OutcomeFilterForm(forms.Form):
+    customer = forms.ModelChoiceField(
+        queryset=Partner.objects.filter(is_executor=False), required=False, label='Исполнитель',
+        widget=forms.Select(attrs={"class": inputClass})
+    )
+
+    create_at = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date', "class": inputClass}),
+                                label='Дата начала')
+
+    amount = forms.FloatField(required=False, widget=forms.DateInput(attrs={'type': 'date', "class": inputClass}),
+                              label='Сумма')
