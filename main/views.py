@@ -1,34 +1,19 @@
-from django.contrib.auth import login
-
-from django.contrib.auth.forms import UserCreationForm
 from django.http import JsonResponse
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404
 
 from .forms import ApplicationForm, LegalEntitiesForm, PartnerForm
 from .models import Application, LegalEntity, Partner
 import logging
 
-# Set up logging
+from django.shortcuts import render, redirect
+from django_otp.decorators import otp_required
+
+
 logger = logging.getLogger(__name__)
 
 
-def sign_up(request):
-    """
-    Creating a new user
-    """
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect("/application/list")
-    else:
-        form = UserCreationForm()
-
-    return render(request, "registration/sign_up.html", {"form": form})
-
-
+@otp_required
 def application_create_view(request):
     if request.method == "POST":
         form = ApplicationForm(request.POST)
@@ -66,7 +51,9 @@ def application_update_view(request, pk):
 
 def application_list(request):
     applications = Application.objects.all()
-    return render(request, "application/application_list.html", {"applications": applications})
+    return render(
+        request, "application/application_list.html", {"applications": applications}
+    )
 
 
 def transaction_success(request):

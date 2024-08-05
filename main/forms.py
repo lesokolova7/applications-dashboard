@@ -138,27 +138,26 @@ class ApplicationForm(forms.ModelForm):
         if self.instance.pk:
             self.instance = self.instance
             self.fields["sum_with_executors_commission"].initial = (
-                    self.instance.initial_sum
-                    * (self.instance.executor_commission - 100)
-                    / -100
+                self.instance.initial_sum
+                * (self.instance.executor_commission - 100)
+                / -100
             )
             self.fields["uncargo_sum"].initial = (
-                    self.instance.initial_sum
-                    * (self.instance.commission_with_interest - 100)
-                    / -100
+                self.instance.initial_sum
+                * (self.instance.commission_with_interest - 100)
+                / -100
             )
-            self.fields["referral_percentage"].initial = (
-                    self.instance.initial_sum
-                    * (self.instance.executor.referral_percentage / 100)
+            self.fields["referral_percentage"].initial = self.instance.initial_sum * (
+                self.instance.executor.referral_percentage / 100
             )
             self.fields["clean_income"].initial = (
-                    self.fields["sum_with_executors_commission"].initial
-                    - self.fields["uncargo_sum"].initial
-                    - self.fields["referral_percentage"].initial
+                self.fields["sum_with_executors_commission"].initial
+                - self.fields["uncargo_sum"].initial
+                - self.fields["referral_percentage"].initial
             )
 
     def clean_is_documents(self):
-        is_documents = self.cleaned_data.get('is_documents')
+        is_documents = self.cleaned_data.get("is_documents")
         return bool(is_documents)
 
     def clean(self):
@@ -169,18 +168,18 @@ class ApplicationForm(forms.ModelForm):
         giving_side = cleaned_data.get("giving_side")
 
         if (
-                initial_sum
-                and executor_commission
-                and commission_with_interest
-                and giving_side
+            initial_sum
+            and executor_commission
+            and commission_with_interest
+            and giving_side
         ):
             sum_with_executors_commission = (
-                    initial_sum * (executor_commission - 100) / -100
+                initial_sum * (executor_commission - 100) / -100
             )
             uncargo_sum = initial_sum * (commission_with_interest - 100) / -100
             referral_percentage = initial_sum * giving_side.referral_percentage / 100
             clean_income = (
-                    sum_with_executors_commission - uncargo_sum - referral_percentage
+                sum_with_executors_commission - uncargo_sum - referral_percentage
             )
 
             cleaned_data["sum_with_executors_commission"] = (
@@ -191,6 +190,7 @@ class ApplicationForm(forms.ModelForm):
             cleaned_data["clean_income"] = clean_income
 
         return cleaned_data
+
 
 class PartnerModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):

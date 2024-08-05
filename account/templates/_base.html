@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static tailwind_tags %}
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{% block title %}My Dashboard{% endblock %}</title>
+    {% tailwind_css %}
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <script defer src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div>
+    <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+        <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6">
+            <div class="flex h-16 shrink-0 items-center">
+                <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=white" alt="Your Company">
+            </div>
+            <nav class="flex flex-1 flex-col">
+                <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <main class="py-10 lg:pl-72">
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+</div>
+</body>
+</html>

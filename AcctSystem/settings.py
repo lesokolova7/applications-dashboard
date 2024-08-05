@@ -20,11 +20,17 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "main",
-    "crispy_forms",
-    "crispy_bootstrap5",
     "tailwind",
     "theme",
     "django_browser_reload",
+    "bootstrapform",
+    # User's personal account
+    "account",
+    # 2FA
+    "two_factor",
+    "django_otp",
+    "django_otp.plugins.otp_totp",
+    "django_otp.plugins.otp_static",
 ]
 
 TAILWIND_APP_NAME = "theme"
@@ -43,6 +49,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django_otp.middleware.OTPMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
@@ -106,8 +113,16 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_REDIRECT_URL = "/application/list"
-LOGOUT_REDIRECT_URL = "/login"
+LOGOUT_REDIRECT_URL = "main:application_list"
+LOGIN_URL = "two_factor:login"
+LOGIN_REDIRECT_URL = "two_factor:profile"
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+try:
+    from .settings_private import *  # noqa
+except ImportError:
+    pass
 
 # LOGGING = {
 #     'version': 1,
