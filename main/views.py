@@ -1,12 +1,14 @@
 from django.contrib.auth import login
 
 from django.contrib.auth.forms import UserCreationForm
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.http import JsonResponse
 
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils.dateparse import parse_date
 
-from .forms import ApplicationForm, LegalEntitiesForm, PartnerForm, IncomeForm, OutcomeForm, ApplicationFilterForm, IncomeFilterForm
+from .forms import ApplicationForm, LegalEntitiesForm, PartnerForm, IncomeForm, OutcomeForm, ApplicationFilterForm, \
+    IncomeFilterForm
 from .models import Application, LegalEntity, Partner, Income, Outcome
 import logging
 
@@ -315,3 +317,46 @@ def outcome_delete(request, pk):
     outcome = get_object_or_404(Outcome, pk=pk)
     outcome.delete()
     return redirect('outcome_list')
+
+
+def partner_data(request):
+    role = request.GET.get('role')
+
+    if role == 'executor':
+        partners = Partner.objects.filter(is_executor=True)
+    else:
+        partners = Partner.objects.filter(is_executor=False)
+
+    partner_list_data = [{'id': partner.id, 'name': partner.name} for partner in partners]
+
+    return JsonResponse({'partners': partner_list_data})
+
+
+def discrepancy_view(request):
+    partners = Partner.objects.all()
+    applications = Application.objects.all()
+
+    # # Filter applications based on request parameters
+    # if request.GET.get('partner'):
+    #     partner_id = request.GET.get('partner')
+    #     applications = applications.filter(executor_id=partner_id)
+    #
+    # if request.GET.get('start_date') and request.GET.get('end_date'):
+    #     start_date = parse_date(request.GET.get('start_date'))
+    #     end_date = parse_date(request.GET.get('end_date'))
+    #     applications = applications.filter(created_date__range=(start_date, end_date))
+    #
+    # income_sum = applications.aggregate(Sum('initial_sum'))['initial_sum__sum'] or 0
+    # outcome_sum = Outcome.objects.filter(customer_id__in=applications.values('customer_id')).aggregate(Sum('amount'))['amount__sum'] or 0
+    #
+    # discrepancy = income_sum - outcome_sum
+    #
+    # context = {
+    #     'partners': partners,
+    #     'applications': applications,
+    #     'income_sum': income_sum,
+    #     'outcome_sum': outcome_sum,
+    #     'discrepancy': discrepancy
+    # }
+
+    return render(request, 'discrepancy/discrepancy.html')
