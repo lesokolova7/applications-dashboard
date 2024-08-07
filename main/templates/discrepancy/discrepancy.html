@@ -1,23 +1,59 @@
 {% extends "main/base.html" %}
 
 {% block content %}
-<h1>Discrepancy Tracking</h1>
-<div class="form-group">
-    <label for="role">Role</label>
-    <select id="role" name="role" class="form-control" onchange="updatePartnerList()">
-        <option value="executor">Executor</option>
-        <option value="customer">Customer</option>
-    </select>
+<body class="bg-gray-100">
+<div class="container mx-auto p-4">
+    <div class="mb-4">
+        <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+        <select id="role"
+                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                onchange="updatePartnerList()">
+            <option value="executor">Executor</option>
+            <option value="customer">Customer</option>
+        </select>
+    </div>
+    <div class="mb-4">
+        <label for="partner" class="block text-sm font-medium text-gray-700">Partner</label>
+        <select id="partner"
+                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                onchange="fetchPartnerData()">
+            <option value="">Select Partner</option>
+        </select>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Дата</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">№ документа
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Заявки</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Прием</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Выдача</th>
+            </tr>
+            </thead>
+            <tbody id="results-table-body" class="bg-white divide-y divide-gray-200">
+            <!-- Rows will be inserted here -->
+            </tbody>
+            <tfoot class="bg-gray-50">
+            <tr>
+                <th colspan="2" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Итого
+                </th>
+                <th id="total-applications"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                <th id="total-income"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                <th id="total-outcome"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+            </tr>
+            </tfoot>
+        </table>
+        <div class="mt-4 text-gray-700">
+            <span>Расхождение: </span><span id="discrepancy"></span>
+        </div>
+    </div>
 </div>
-
-<div class="form-group">
-    <label for="partner">Partner</label>
-    <select id="partner" name="partner" class="form-control">
-        <option value="">Select Partner</option>
-    </select>
-</div>
-
-
 <script>
     function updatePartnerList() {
         const role = document.getElementById('role').value;
@@ -33,11 +69,95 @@
                     option.textContent = partner.name;
                     partnerSelect.appendChild(option);
                 });
-            });
+            })
+            .catch(error => console.error('Error fetching partner list:', error));
+    }
+
+    function fetchPartnerData() {
+        const partnerId = document.getElementById('partner').value;
+        const role = document.getElementById('role').value;
+
+        if (partnerId) {
+            fetch(`/partner/data/all?partner_id=${partnerId}&role=${role}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const tbody = document.getElementById('results-table-body');
+                    tbody.innerHTML = '';
+
+                    // Combine all entries and sort by date
+                    const combinedEntries = [];
+
+                    data.applications.forEach(app => {
+                        combinedEntries.push({
+                            type: 'application',
+                            date: new Date(app.created_date),
+                            data: app
+                        });
+                    });
+
+                    data.incomes.forEach(inc => {
+                        combinedEntries.push({
+                            type: 'income',
+                            date: new Date(inc.created_at),
+                            data: inc
+                        });
+                    });
+
+                    data.outcomes.forEach(out => {
+                        combinedEntries.push({
+                            type: 'outcome',
+                            date: new Date(out.created_at),
+                            data: out
+                        });
+                    });
+
+                    combinedEntries.sort((a, b) => b.date - a.date);
+
+                    // Process and display the combined entries
+                    const rows = {};
+                    combinedEntries.forEach(entry => {
+                        const dateStr = entry.date.toISOString().split('T')[0];
+                        if (!rows[dateStr]) {
+                            rows[dateStr] = {date: dateStr, applications: [], incomes: [], outcomes: []};
+                        }
+                        if (entry.type === 'application') {
+                            rows[dateStr].applications.push(entry.data);
+                        } else if (entry.type === 'income') {
+                            rows[dateStr].incomes.push(entry.data);
+                        } else if (entry.type === 'outcome') {
+                            rows[dateStr].outcomes.push(entry.data);
+                        }
+                    });
+
+                    Object.values(rows).forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-center">${row.date}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">${row.applications.length ? row.applications.map(app => app.id).join(', ') : '-'}</td>
+                                <td class="px-6 py-4  text-sm text-gray-500 whitespace-pre-wrap text-center min-w-[200px]">${row.applications.length ? row.applications.map(app => `<b>Cумма отгрузки:</b> ${app.amount}.\n  <b>Исполнитель:</b> ${app.executor}. \n <b>Заказчик:</b> ${app.customer}\n`).join('<br>') : '-'}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">${row.incomes.length ? row.incomes.map(inc => `<b>${inc.amount}</b> от ${inc.name}`).join('<br>') : '-'}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">${row.outcomes.length ? row.outcomes.map(out => `<b>${out.amount}</b> от ${out.name}`).join('<br>') : '-'}</td>
+                            `;
+                        tbody.appendChild(tr);
+                    });
+
+                    document.getElementById('total-applications').textContent = data.total_applications;
+                    document.getElementById('total-income').textContent = data.total_income;
+                    document.getElementById('total-outcome').textContent = data.total_outcome;
+                    document.getElementById('discrepancy').textContent = data.discrepancy;
+                })
+                .catch(error => console.error('Error fetching partner data:', error));
+        }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         updatePartnerList();
     });
 </script>
+</body>
 {% endblock %}
