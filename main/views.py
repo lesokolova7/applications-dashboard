@@ -316,30 +316,73 @@ def partner_data(request):
 
 
 def discrepancy_view(request):
-    partners = Partner.objects.all()
-    applications = Application.objects.all()
+    role = request.GET.get('role', 'executor')
+    partners = Partner.objects.filter(is_executor=(role == 'executor'))
 
-    # # Filter applications based on request parameters
-    # if request.GET.get('partner'):
-    #     partner_id = request.GET.get('partner')
-    #     applications = applications.filter(executor_id=partner_id)
-    #
-    # if request.GET.get('start_date') and request.GET.get('end_date'):
-    #     start_date = parse_date(request.GET.get('start_date'))
-    #     end_date = parse_date(request.GET.get('end_date'))
-    #     applications = applications.filter(created_date__range=(start_date, end_date))
-    #
-    # income_sum = applications.aggregate(Sum('initial_sum'))['initial_sum__sum'] or 0
-    # outcome_sum = Outcome.objects.filter(customer_id__in=applications.values('customer_id')).aggregate(Sum('amount'))['amount__sum'] or 0
-    #
-    # discrepancy = income_sum - outcome_sum
-    #
-    # context = {
-    #     'partners': partners,
-    #     'applications': applications,
-    #     'income_sum': income_sum,
-    #     'outcome_sum': outcome_sum,
-    #     'discrepancy': discrepancy
-    # }
+    context = {
+        'partners': partners
+    }
 
-    return render(request, 'discrepancy/discrepancy.html')
+    return render(request, 'discrepancy/discrepancy.html', context)
+
+
+def partner_data_whole(request):
+    partner_id = request.GET.get('partner_id')
+    role = request.GET.get('role')
+
+    if role == 'executor':
+        applications = Application.objects.filter(executor_id=partner_id)
+        incomes = Income.objects.filter(executor_id=partner_id)
+        outcomes = Outcome.objects.filter(customer_id__in=applications.values('customer_id'))
+    else:
+        applications = Application.objects.filter(customer_id=partner_id)
+        incomes = Income.objects.filter(executor_id__in=applications.values('executor_id'))
+        outcomes = Outcome.objects.filter(customer_id=partner_id)
+
+    total_applications = applications.count()
+    total_income = incomes.aggregate(Sum('amount'))['amount__sum'] or 0
+    total_outcome = outcomes.aggregate(Sum('amount'))['amount__sum'] or 0
+    discrepancy = total_income - total_outcome
+
+    application_data = []
+    for app in applications:
+        application_data.append({
+            'created_date': app.created_date,
+            'id': app.id,
+            'customer': app.customer.name if app.customer is not None else 'Нет заказчика',
+            'executor': app.executor.name if app.executor is not None else 'Нет исполнителя',
+            'amount': app.uncargo_sum,
+            'created_at': app.created_at,
+        })
+
+    incomes_data = []
+    for income in incomes:
+        incomes_data.append({
+            'created_at': income.created_at,
+            'id': income.id,
+            'executor': income.executor_id,
+            'name': income.executor.name,
+            'amount': income.amount,
+        })
+
+    outcomes_data = []
+    for outcome in outcomes:
+        outcomes_data.append({
+            'created_at': outcome.created_at,
+            'id': outcome.id,
+            'customer': outcome.customer_id,
+            'name': outcome.customer.name,
+            'amount': income.amount,
+        })
+
+    data = {
+        'incomes': incomes_data,
+        'outcomes': outcomes_data,
+        'applications': application_data,
+        'total_applications': total_applications,
+        'total_income': total_income,
+        'total_outcome': total_outcome,
+        'discrepancy': discrepancy
+    }
+
+    return JsonResponse(data)

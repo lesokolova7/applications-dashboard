@@ -23,6 +23,7 @@ urlpatterns = [
     path('partner/<int:pk>/', views.partner_update, name='partner_update'),
     path('partner/<int:pk>/delete/', views.partner_delete, name='partner_delete'),
     path('partner/data/', views.partner_data, name='partner_data'),
+    path('partner/data/all', views.partner_data_whole, name='partner_data_whole'),
 
     path("income/new/", views.income_create, name="income_create"),
     path("income/list/", views.income_list, name="income_list"),
@@ -35,4 +36,5 @@ urlpatterns = [
     path('outcome/<int:pk>/delete/', views.outcome_delete, name='outcome_delete'),
 
     path('discrepancy/', views.discrepancy_view, name='discrepancy_view'),
+
 ]
