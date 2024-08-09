@@ -58,10 +58,7 @@ def create_incomes(entries_num: int):
     partners = list(Partner.objects.filter(is_executor=True))
     Income.objects.bulk_create(
         [
-            Income(
-                id=uuid.uuid4(),
-                executor=choice(partners),
-                amount=randint(0, 100))
+            Income(id=uuid.uuid4(), executor=choice(partners), amount=randint(0, 100))
             for _ in range(entries_num)
         ]
     )
@@ -72,9 +69,8 @@ def create_outcomes(entries_num: int):
     Outcome.objects.bulk_create(
         [
             Outcome(
-                id=uuid.uuid4(),
-                customer=choice(partners),
-                amount=randint(500, 10000))
+                id=uuid.uuid4(), customer=choice(partners), amount=randint(500, 10000)
+            )
             for _ in range(entries_num)
         ]
     )
@@ -117,17 +113,19 @@ def update_applications():
             application.initial_sum * (application.executor_commission - 100) / -100
         )
         uncargo_sum = (
-            application.initial_sum * (application.commission_with_interest - 100) / -100
+            application.initial_sum
+            * (application.commission_with_interest - 100)
+            / -100
         )
-        referral_percentage = (
-                application.initial_sum * (application.executor_commission / 100)
-        )
-
-        clean_income = (
-                sum_with_executors_commission - uncargo_sum - referral_percentage
+        referral_percentage = application.initial_sum * (
+            application.executor_commission / 100
         )
 
-        application.sum_with_executors_commission = round(sum_with_executors_commission, 2)
+        clean_income = sum_with_executors_commission - uncargo_sum - referral_percentage
+
+        application.sum_with_executors_commission = round(
+            sum_with_executors_commission, 2
+        )
         application.uncargo_sum = round(uncargo_sum, 2)
         application.referral_percentage = round(referral_percentage, 2)
         application.clean_income = round(clean_income, 2)

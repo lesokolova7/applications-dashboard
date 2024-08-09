@@ -1,13 +1,17 @@
 {% extends "_base.html" %}
 
 {% block content %}
-  <h1>Добро пожаловать!</h1>
-  <p>Вы находитесь в приложении "Система учета заявок".</p>
 
   {% url 'account:registration' as registration_url %}
   {% url 'two_factor:login' as login_url %}
   {% url 'two_factor:setup' as setup_url %}
   {% url 'account:logout' as logout_url %}
+  {% url '/admin' as admin_url %}
+
+  <h1>Добро пожаловать!</h1>
+  <p>Вы находитесь в приложении "Система учета заявок".
+    <li><a href="/admin">Администрирование приложения: </a>выполните вход, используя данные superuser.</li>
+  </p>
 
   <h4>Чтобы начать пользоваться всеми функционалными возможностями, следуйте простым шагам:</h4>
 

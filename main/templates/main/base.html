@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>{% block title %}My Dashboard{% endblock %}</title>
     {% tailwind_css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 <div>
@@ -101,16 +102,24 @@
                             </li>
                         </ul>
                     </li>
-                     {% endif %}
-
-                    {% if user.is_authenticated %}
-                    <li class="-mx-6 mt-auto">
-                        <div class="flex flex-col justify-start items-start gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-white hover:bg-indigo-700">
-                            <span class="">Твой профиль:</span>
-                            <span aria-hidden="true">{{user.username}} - <a class="white underline text-2xl" href="{% url 'account:logout' %}">Выход</a></span>
-                        </div>
-                    </li>
+                        <li class="-mx-6 mt-auto">
+                            <div class="flex flex-col justify-start items-start gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-white hover:bg-indigo-700">
+                                <span class="flex items-center">
+                                    Твой профиль: {{ user.username }}
+                                    {% if user.is_superuser %}
+                                        <a href="/admin/" class="text-white ml-10" title="Admin">
+                                            <i class="fa-solid fa-gear fa-xl"></i>
+                                        </a>
+                                    {% endif %}
+                                </span>
+                                <span aria-hidden="true" class="flex items-center mt-1">
+                                    <a class="text-white underline hover:text-indigo-300 transition-colors" href="{% url 'account:logout' %}">Выход</a>
+                                </span>
+                            </div>
+                        </li>
                     {% endif %}
+
+
                 </ul>
             </nav>
         </div>

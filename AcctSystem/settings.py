@@ -103,6 +103,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Session lifetime (48h)
+SESSION_COOKIE_AGE = 172800
+
 LANGUAGE_CODE = "ru"
 
 TIME_ZONE = "UTC"
