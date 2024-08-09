@@ -2,8 +2,7 @@ from django.contrib.auth.views import LogoutView
 from django.urls import path
 
 from .views import (
-    ExampleSecretView,
-    HomeView,
+    WelcomeView,
     RegistrationCompleteView,
     RegistrationView,
 )
@@ -14,19 +13,14 @@ app_name = "account"
 
 urlpatterns = [
     path(
-        "",
-        HomeView.as_view(),
-        name="home",
+        "welcome/",
+        WelcomeView.as_view(),
+        name="welcome",
     ),
     path(
         "logout/",
         LogoutView.as_view(),
         name="logout",
-    ),
-    path(
-        "secret/",
-        ExampleSecretView.as_view(),
-        name="secret",
     ),
     path(
         "register/",

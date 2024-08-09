@@ -1,7 +1,7 @@
 {% extends "main/base.html" %}
 {% block content %}
 <h1 class="text-base font-semibold leading-6 text-gray-900">{{ form.instance.id|default:"Создать новый исходящий платеж" }}</h1>
-<a href="{% url 'outcome_list' %}" class="cursor-pointer underline">
+<a href="{% url 'main:outcome_list' %}" class="cursor-pointer underline">
     <- вернуться к списку исходящий платежей
 </a>
 <form method="post" class="mt-5">

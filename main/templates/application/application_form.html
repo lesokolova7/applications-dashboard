@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1 class="text-base font-semibold leading-6 text-gray-900">Создать новую заявку</h1>
-<a href="{% url 'application_list' %}" class="cursor-pointer underline">
+<a href="{% url 'main:application_list' %}" class="cursor-pointer underline">
     <- вернуться к списку
 </a>
 <form method="post" class="mt-5 max-w-[75%]">
@@ -43,7 +43,7 @@
             let receiverId = $(this).val();
             if (receiverId) {
                 $.ajax({
-                    url: '{% url "legal_entities_data" %}',
+                    url: '{% url "main:legal_entities_data" %}',
                     success: function (data) {
                         let hasValidOptions = false;
                         $('#id_receiver').empty();  // Clear all current options
@@ -81,7 +81,7 @@
             let customerId = $(this).val();
             if (customerId) {
                 $.ajax({
-                    url: '{% url "legal_entities_data" %}',
+                    url: '{% url "main:legal_entities_data" %}',
                     success: function (data) {
                         let hasValidOptions = false;
                         $('#id_sender').empty();  // Clear all current options

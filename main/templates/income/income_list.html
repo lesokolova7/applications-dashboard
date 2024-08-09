@@ -8,7 +8,7 @@
             <p class="mt-2 text-sm text-gray-700">Список:</p>
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-            <a href="{% url 'income_create' %}">
+            <a href="{% url 'main:income_create' %}">
                 <button type="button"
                         class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                     Добавить входящие платежи
@@ -93,14 +93,14 @@
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ income.amount }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ income.created_at }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            <a href="{% url 'income_update' income.pk %}">
+                            <a href="{% url 'main:income_update' income.pk %}">
                                 <button  class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                     Редактировать
                                 </button>
                             </a>
                         </td>
                         <td>
-                            <form action="{% url 'income_delete' income.pk %}" method="post" style="display:inline;">
+                            <form action="{% url 'main:income_delete' income.pk %}" method="post" style="display:inline;">
                                 {% csrf_token %}
                                 <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                     Удалить

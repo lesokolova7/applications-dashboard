@@ -1,26 +1,10 @@
-import datetime
 from enum import Enum
 
-from django.core.exceptions import ValidationError
 from django.db import models
 
 
-def validate_customer_is_not_executor(partner):
-    if partner.is_executor:
-        raise ValidationError(
-            f"The selected partner {partner.name} is an executor and cannot be a customer."
-        )
-
-
-def validate_customer_is_executor(partner):
-    if not partner.is_executor:
-        raise ValidationError(
-            f"The selected partner {partner.name} is an executor and cannot be a customer."
-        )
-
-
 class Partner(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True)
     name = models.CharField(max_length=255, unique=True, null=False)
     referral_percentage = models.FloatField(null=False, max_length=10)
     is_executor = models.BooleanField(default=False, null=False)
@@ -32,7 +16,7 @@ class Partner(models.Model):
 
 
 class Income(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True)
     executor = models.ForeignKey("Partner", on_delete=models.CASCADE, null=False)
     amount = models.FloatField(null=False)
     created_at = models.DateTimeField(auto_now_add=True, null=False)
@@ -43,7 +27,7 @@ class Income(models.Model):
 
 
 class Outcome(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True)
     customer = models.ForeignKey("Partner", on_delete=models.CASCADE, null=False)
     amount = models.FloatField(null=False)
     created_at = models.DateTimeField(auto_now_add=True, null=False)
@@ -54,7 +38,7 @@ class Outcome(models.Model):
 
 
 class LegalEntity(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True)
     name = models.CharField(max_length=255, unique=True, null=False)
     partner = models.ForeignKey("Partner", on_delete=models.CASCADE, null=False)
     tax_number = models.CharField(max_length=255, null=False)
@@ -77,8 +61,8 @@ class ApplicationChoices(Enum):
 
 
 class Application(models.Model):
-    id = models.AutoField(primary_key=True)
-    status = models.CharField(choices=ApplicationChoices.choices(), max_length=25)
+    id = models.UUIDField(primary_key=True)
+    status = models.CharField(choices=ApplicationChoices.choices(), max_length=50)
     created_date = models.DateTimeField(auto_now_add=True)
     resolving_date = models.DateTimeField(null=True)
     customer = models.ForeignKey(

@@ -8,7 +8,7 @@
             <h1 class="text-base font-semibold leading-6 text-gray-900">Заявки</h1>
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-            <a href="{% url 'application_create' %}">
+            <a href="{% url 'main:application_create' %}">
                 <button type="button"
                         class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                     Создать новую
@@ -166,14 +166,14 @@
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ application.created_at }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ application.created_at }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            <a href="{% url 'application_update' application.pk %}">
+                            <a href="{% url 'main:application_update' application.pk %}">
                                 <button class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                     Редактировать
                                 </button>
                             </a>
                         </td>
                         <td>
-                            <form action="{% url 'application_delete' application.pk %}" method="post"
+                            <form action="{% url 'main:application_delete' application.pk %}" method="post"
                                   style="display:inline;">
                                 {% csrf_token %}
                                 <button type="submit"

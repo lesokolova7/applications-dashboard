@@ -2,7 +2,7 @@
 {% extends "main/base.html" %}
 {% block content %}
 <h1 class="text-base font-semibold leading-6 text-gray-900">{{ form.instance.id|default:"Создать новое юр. лицо:" }}</h1>
-<a href="{% url 'legal_entities_list' %}" class="cursor-pointer underline">
+<a href="{% url 'main:legal_entities_list' %}" class="cursor-pointer underline">
     <- вернуться к списку юр. лиц
 </a>
 <form method="post" class="mt-5">

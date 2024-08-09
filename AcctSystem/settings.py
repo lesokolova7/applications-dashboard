@@ -24,6 +24,8 @@ INSTALLED_APPS = [
     "theme",
     "django_browser_reload",
     "bootstrapform",
+    "crispy_forms",
+    "crispy_bootstrap5",
     # User's personal account
     "account",
     # 2FA
@@ -101,28 +103,23 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ru"
 
 TIME_ZONE = "UTC"
 
 USE_I18N = True
-
+USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGOUT_REDIRECT_URL = "main:application_list"
+TWO_FACTOR_AUTHENTICATION_FORM = "account.forms.CustomAuthenticationForm"
+
+LOGOUT_REDIRECT_URL = "account:welcome"
 LOGIN_URL = "two_factor:login"
-LOGIN_REDIRECT_URL = "two_factor:profile"
-
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-try:
-    from .settings_private import *  # noqa
-except ImportError:
-    pass
+LOGIN_REDIRECT_URL = "main:application_list"
 
 # LOGGING = {
 #     'version': 1,

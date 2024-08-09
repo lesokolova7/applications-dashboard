@@ -7,7 +7,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include(tf_urls)),
     path("", include("user_sessions.urls", "user_sessions")),
-    path("", include("main.urls")),
     path("account/", include("account.urls", namespace="account")),
+    path("", include("main.urls")),
     path("__reload__/", include("django_browser_reload.urls")),
 ]

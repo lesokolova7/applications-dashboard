@@ -8,7 +8,7 @@
             <p class="mt-2 text-sm text-gray-700">Список:</p>
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-            <a href="{% url 'partner_create' %}">
+            <a href="{% url 'main:partner_create' %}">
                 <button type="button"
                         class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                     Добавить партнера
@@ -48,14 +48,14 @@
                         </td>
                         </td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            <a href="{% url 'partner_update' customer.pk %}">
+                            <a href="{% url 'main:partner_update' customer.pk %}">
                                  <button  class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                     Редактировать
                                 </button></a>
                             </a>
                         </td>
                         <td>
-                            <form action="{% url 'partner_delete' customer.pk %}" method="post" style="display:inline;">
+                            <form action="{% url 'main:partner_delete' customer.pk %}" method="post" style="display:inline;">
                                 {% csrf_token %}
                                 <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                     Удалить
@@ -93,14 +93,14 @@
                             {% if executor.is_executor %}Да{% else %}Нет{% endif %}
                         </td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            <a href="{% url 'partner_update' executor.pk %}">
+                            <a href="{% url 'main:partner_update' executor.pk %}">
                                 <button class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                     Редактировать
                                 </button>
                             </a>
                         </td>
                         <td>
-                            <form action="{% url 'partner_delete' executor.pk %}" method="post" style="display:inline;">
+                            <form action="{% url 'main:partner_delete' executor.pk %}" method="post" style="display:inline;">
                                 {% csrf_token %}
                                 <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                     Удалить

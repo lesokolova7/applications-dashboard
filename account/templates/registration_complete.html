@@ -3,8 +3,7 @@
 
 {% block content %}
   <h1>{% block title %}{% trans "Registration Complete" %}{% endblock %}</h1>
-  <p>{% blocktrans trimmed %}Congratulations, you've successfully registered an
-    account.{% endblocktrans %}</p>
+  <p>{% blocktrans trimmed %}Congratulations, you've successfully registered an account.{% endblocktrans %}</p>
   <p><a href="{{ login_url }}"
         class="btn btn-block btn-secondary">{% trans "Login" %}</a></p>
 {% endblock %}

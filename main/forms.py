@@ -1,5 +1,12 @@
 from django import forms
-from .models import Application, ApplicationChoices, Partner, LegalEntity, Outcome, Income
+from .models import (
+    Application,
+    ApplicationChoices,
+    Partner,
+    LegalEntity,
+    Outcome,
+    Income,
+)
 
 import logging
 
@@ -177,7 +184,7 @@ class ApplicationForm(forms.ModelForm):
                 initial_sum * (executor_commission - 100) / -100
             )
             uncargo_sum = initial_sum * (commission_with_interest - 100) / -100
-            referral_percentage = initial_sum * giving_side.referral_percentage / 100
+            referral_percentage = initial_sum * (executor_commission / 100)
             clean_income = (
                 sum_with_executors_commission - uncargo_sum - referral_percentage
             )
@@ -250,7 +257,9 @@ class IncomeForm(forms.ModelForm):
     executor = PartnerModelChoiceField(
         queryset=Partner.objects.filter(is_executor=True),
         label="Исполнитель",
-        widget=forms.Select(attrs={"class": inputClass, "placeholder": "Введите исполнителя"}),
+        widget=forms.Select(
+            attrs={"class": inputClass, "placeholder": "Введите исполнителя"}
+        ),
     )
 
     class Meta:
@@ -273,7 +282,9 @@ class OutcomeForm(forms.ModelForm):
     customer = PartnerModelChoiceField(
         queryset=Partner.objects.filter(is_executor=False),
         label="Заказчик",
-        widget=forms.Select(attrs={"class": inputClass, "placeholder": "Введите исполнителя"}),
+        widget=forms.Select(
+            attrs={"class": inputClass, "placeholder": "Введите исполнителя"}
+        ),
     )
 
     class Meta:
@@ -294,51 +305,73 @@ class OutcomeForm(forms.ModelForm):
 
 class ApplicationFilterForm(forms.Form):
     customer = forms.ModelChoiceField(
-        queryset=Partner.objects.filter(is_executor=False), required=False, label='Заказчик',
-        widget=forms.Select(attrs={"class": inputClass})
+        queryset=Partner.objects.filter(is_executor=False),
+        required=False,
+        label="Заказчик",
+        widget=forms.Select(attrs={"class": inputClass}),
     )
     executor = forms.ModelChoiceField(
-        queryset=Partner.objects.all().filter(is_executor=True), required=False, label='Исполнитель',
-        widget=forms.Select(attrs={"class": inputClass})
+        queryset=Partner.objects.all().filter(is_executor=True),
+        required=False,
+        label="Исполнитель",
+        widget=forms.Select(attrs={"class": inputClass}),
     )
 
-    start_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date', "class": inputClass}),
-                                 label='Дата начала')
-    end_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date', "class": inputClass}),
-                               label='Дата окончания')
+    start_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"type": "date", "class": inputClass}),
+        label="Дата начала",
+    )
+    end_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"type": "date", "class": inputClass}),
+        label="Дата окончания",
+    )
 
     legal_entity = forms.ModelChoiceField(
-        queryset=LegalEntity.objects.all(), required=False, label='Юр лицо',
+        queryset=LegalEntity.objects.all(),
+        required=False,
+        label="Юр лицо",
         widget=forms.Select(attrs={"class": inputClass}),
     )
 
 
 class IncomeFilterForm(forms.Form):
     executor = forms.ModelChoiceField(
-        queryset=Partner.objects.filter(is_executor=True), required=False, label='Исполнитель'
+        queryset=Partner.objects.filter(is_executor=True),
+        required=False,
+        label="Исполнитель",
     )
 
     sort_by_amount = forms.ChoiceField(
-        choices=[('asc', 'По возрастанию'), ('desc', 'По убыванию')],
+        choices=[("asc", "По возрастанию"), ("desc", "По убыванию")],
         required=False,
-        label='Сортировать по сумме'
+        label="Сортировать по сумме",
     )
 
     sort_by_created_at = forms.ChoiceField(
-        choices=[('asc', 'По возрастанию даты'), ('desc', 'По убыванию даты')],
+        choices=[("asc", "По возрастанию даты"), ("desc", "По убыванию даты")],
         required=False,
-        label='Сортировать по дате создания'
+        label="Сортировать по дате создания",
     )
 
 
 class OutcomeFilterForm(forms.Form):
     customer = forms.ModelChoiceField(
-        queryset=Partner.objects.filter(is_executor=False), required=False, label='Исполнитель',
-        widget=forms.Select(attrs={"class": inputClass})
+        queryset=Partner.objects.filter(is_executor=False),
+        required=False,
+        label="Исполнитель",
+        widget=forms.Select(attrs={"class": inputClass}),
     )
 
-    create_at = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date', "class": inputClass}),
-                                label='Дата начала')
+    create_at = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"type": "date", "class": inputClass}),
+        label="Дата начала",
+    )
 
-    amount = forms.FloatField(required=False, widget=forms.DateInput(attrs={'type': 'date', "class": inputClass}),
-                              label='Сумма')
+    amount = forms.FloatField(
+        required=False,
+        widget=forms.DateInput(attrs={"type": "date", "class": inputClass}),
+        label="Сумма",
+    )
